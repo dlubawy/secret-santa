@@ -48,7 +48,13 @@ import Navbar from "./components/Navbar.vue";
 import LoginForm from "./components/LoginForm.vue";
 import GiftItem from "./components/GiftItem.vue";
 
-import { doc, collection, getDoc, setDoc } from "firebase/firestore";
+import {
+  doc,
+  collection,
+  getDoc,
+  setDoc,
+  onSnapshot,
+} from "firebase/firestore";
 import { db, auth } from "./firebaseConfig.js";
 
 const userRef = collection(db, "users");
@@ -107,7 +113,8 @@ export default {
             const privateRef = collection(userRef, user.uid, "private");
             getDoc(doc(privateRef, "data")).then((privateUser) => {
               if (privateUser.data().secret && privateUser.data().secret.uid) {
-                getDoc(doc(userRef, privateUser.data().secret.uid)).then(
+                onSnapshot(
+                  doc(userRef, privateUser.data().secret.uid),
                   (secretUser) => {
                     this.secretName = secretUser.data().name;
                     this.gifts = secretUser.data().gifts;
