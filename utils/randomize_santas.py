@@ -24,14 +24,18 @@ random.shuffle(available)
 for doc in docs:
     data = doc.collection('private').document('data').get().to_dict()
     never = set(data['secret']['never'])
+    never.add(data['secret']['previous'])
     secret = available.popleft()
+
+    seen = set(secret.id)
 
     while doc == secret or doc in never:
         available.append(secret)
         secret = available.popleft()
 
-        if len(available) <= 1:
-            break
+        if secret.id in seen:
+            raise RuntimeError("Unable to make a match for \'{doc.id}\'!")
+        seen.add(secret.id)
 
     data.update(secret=dict(uid=secret.id, previous=data['secret']['uid']))
     doc.collection('private').document('data').set(data)
