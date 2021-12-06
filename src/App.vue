@@ -10,7 +10,8 @@
           <h3>Their Wishlist</h3>
           <ul class="list-group list-group-flush">
             <li v-for="gift in gifts" v-bind:key="gift" class="list-group-item">
-              {{ gift }}
+              <a v-if="isLink(gift)" v-bind:href="gift">{{ gift }}</a>
+              <span v-else>{{ gift }}</span>
             </li>
           </ul>
           <br />
@@ -70,6 +71,11 @@ export default {
     };
   },
   methods: {
+    isLink(text) {
+      let exp =
+        /((?:https?|ftp):\/\/[a-zA-Z0-9][\w+\d+&@\-#/%?=~_|!:,.;+]*)/gim;
+      return text.match(exp) != null;
+    },
     addNewGift() {
       this.myGifts.push({
         id: this.nextGiftId++,
