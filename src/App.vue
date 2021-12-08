@@ -18,11 +18,13 @@
           <h3>Your Wishlist</h3>
           <div>
             <form v-on:submit.prevent="addNewGift" class="input-group">
-              <label for="new-gift" class="input-group-text">Add a gift</label>
+              <label for="new-gift" class="input-group-text"
+                >Add a gift ($25 limit)</label
+              >
               <input
                 v-model="newGiftText"
                 id="new-gift"
-                placeholder="E.g. Nintendo Switch game or link to Amazon wish list"
+                placeholder="E.g. socks or a link to Amazon wish list"
                 class="form-control"
               />
               <button class="btn btn-primary">Add</button>
