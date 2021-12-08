@@ -39,7 +39,6 @@
 import {
   sendPasswordResetEmail,
   signInWithEmailAndPassword,
-  createUserWithEmailAndPassword,
 } from "firebase/auth";
 
 import { auth } from "../firebaseConfig.js";
@@ -60,12 +59,10 @@ export default {
       signInWithEmailAndPassword(auth, this.email, this.password).catch(
         (error) => {
           const errorCode = error.code;
-          if (errorCode === "auth/user-not-found") {
-            var resp = confirm("User not found. Create an account?");
-            if (resp == true) {
-              createUserWithEmailAndPassword(auth, this.email, this.password);
-            }
-          } else if (errorCode === "auth/wrong-password") {
+          if (
+            errorCode === "auth/wrong-password" ||
+            errorCode === "auth/user-not-found"
+          ) {
             alert("Invalid credentials.");
           }
         }
@@ -77,6 +74,9 @@ export default {
         if (resp == true) {
           sendPasswordResetEmail(auth, this.email);
         }
+      } else {
+        resp = prompt("Enter your email address.");
+        sendPasswordResetEmail(auth, resp);
       }
     },
   },

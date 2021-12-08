@@ -8,6 +8,7 @@
           <h1>Hello {{ user }}</h1>
           <h2>You are {{ secretName }}'s Secret Santa!</h2>
           <h3>Their Wishlist</h3>
+          <span>Reminder: the limit is $50 total</span>
           <ul class="list-group list-group-flush">
             <li v-for="gift in gifts" v-bind:key="gift" class="list-group-item">
               <a v-if="isLink(gift)" v-bind:href="gift"
@@ -21,7 +22,7 @@
           <div>
             <form v-on:submit.prevent="addNewGift" class="input-group">
               <label for="new-gift" class="input-group-text"
-                >Add a gift ($25 limit)</label
+                >Add a gift ($50/gift limit)</label
               >
               <input
                 v-model="newGiftText"
