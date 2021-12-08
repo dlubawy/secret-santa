@@ -37,5 +37,7 @@ for doc in docs:
             raise RuntimeError("Unable to make a match for \'{doc.id}\'!")
         seen.add(secret.id)
 
-    data.update(secret=dict(uid=secret.id, previous=data['secret']['uid']))
+    data.update(secret=dict(uid=secret.id,
+                            previous=data['secret']['uid'],
+                            never=data['secret']['never']))
     doc.collection('private').document('data').set(data)
