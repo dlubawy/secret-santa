@@ -22,12 +22,22 @@
         id="exampleInputPassword1"
       />
     </div>
-    <button class="btn btn-primary">Submit</button>
+    <div class="d-flex gap-2">
+      <button class="btn btn-primary">Submit</button>
+      <button
+        v-on:click="passwordReset"
+        type="button"
+        class="btn btn-secondary"
+      >
+        Password Reset
+      </button>
+    </div>
   </form>
 </template>
 
 <script>
 import {
+  sendPasswordResetEmail,
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
 } from "firebase/auth";
@@ -60,6 +70,14 @@ export default {
           }
         }
       );
+    },
+    passwordReset() {
+      if (this.email) {
+        var resp = confirm(`Send email to ${this.email} for password reset?`);
+        if (resp == true) {
+          sendPasswordResetEmail(auth, this.email);
+        }
+      }
     },
   },
 };
