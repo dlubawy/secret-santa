@@ -10,7 +10,9 @@
           <h3>Their Wishlist</h3>
           <ul class="list-group list-group-flush">
             <li v-for="gift in gifts" v-bind:key="gift" class="list-group-item">
-              <a v-if="isLink(gift)" v-bind:href="gift">{{ gift }}</a>
+              <a v-if="isLink(gift)" v-bind:href="gift"
+                ><div class="text-truncate">{{ gift }}</div></a
+              >
               <span v-else>{{ gift }}</span>
             </li>
           </ul>

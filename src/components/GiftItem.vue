@@ -1,11 +1,13 @@
 <template>
   <li class="list-group-item">
-    <div class="d-flex gap-2">
-      <div class="d-flex col-lg">
-        <a v-if="isLink(title)" v-bind:href="title">{{ title }}</a>
+    <div class="row justify-content-center">
+      <div class="col-sm-10">
+        <a v-if="isLink(title)" v-bind:href="title"
+          ><div class="text-truncate">{{ title }}</div></a
+        >
         <span v-else>{{ title }}</span>
       </div>
-      <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+      <div class="col-sm-2">
         <button v-on:click="$emit('remove')" class="btn btn-warning">
           Remove
         </button>
