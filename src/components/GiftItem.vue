@@ -2,10 +2,7 @@
   <li class="list-group-item">
     <div class="row justify-content-center">
       <div class="col-sm-10">
-        <a v-if="isLink(title)" v-bind:href="title"
-          ><div class="text-truncate">{{ title }}</div></a
-        >
-        <span v-else>{{ title }}</span>
+        <span v-html="makeLink(title)"></span>
       </div>
       <div class="col-sm-2">
         <button v-on:click="$emit('remove')" class="btn btn-warning">
@@ -20,10 +17,12 @@
 export default {
   name: "GiftItem",
   methods: {
-    isLink(text) {
+    makeLink(text) {
       let exp =
         /((?:https?|ftp):\/\/[a-zA-Z0-9][\w+\d+&@\-#/%?=~_|!:,.;+]*)/gim;
-      return text.match(exp) != null;
+      return text.replace(exp, (matched) => {
+        return `<a href="${matched}"><div class="text-truncate">${matched}</div></a>`;
+      });
     },
   },
   props: {

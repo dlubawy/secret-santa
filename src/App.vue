@@ -11,10 +11,7 @@
           <span>Reminder: the limit is $50 total</span>
           <ul class="list-group list-group-flush">
             <li v-for="gift in gifts" v-bind:key="gift" class="list-group-item">
-              <a v-if="isLink(gift)" v-bind:href="gift"
-                ><div class="text-truncate">{{ gift }}</div></a
-              >
-              <span v-else>{{ gift }}</span>
+              <span v-html="makeLink(gift)"></span>
             </li>
           </ul>
           <br />
@@ -76,10 +73,12 @@ export default {
     };
   },
   methods: {
-    isLink(text) {
+    makeLink(text) {
       let exp =
         /((?:https?|ftp):\/\/[a-zA-Z0-9][\w+\d+&@\-#/%?=~_|!:,.;+]*)/gim;
-      return text.match(exp) != null;
+      return text.replace(exp, (matched) => {
+        return `<a href="${matched}"><div class="text-truncate">${matched}</div></a>`;
+      });
     },
     addNewGift() {
       this.myGifts.push({
