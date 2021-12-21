@@ -26,7 +26,7 @@
           <li class="nav-item">
             <button
               v-on:click="passwordReset"
-              class="btn btn-outline-info"
+              class="btn btn-info"
               style="width: 100%"
               type="submit"
             >
@@ -36,7 +36,7 @@
           <li class="nav-item">
             <button
               v-on:click="logout"
-              class="btn btn-outline-danger"
+              class="btn btn-danger"
               style="width: 100%"
               type="submit"
             >

@@ -1,5 +1,5 @@
 <template>
-  <form v-if="!user" v-on:submit.prevent="login">
+  <form v-on:submit.prevent="login">
     <div class="mb-3">
       <label for="exampleInputEmail1" class="form-label">Email address</label>
       <input

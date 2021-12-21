@@ -2,19 +2,30 @@
   <div id="app" class="d-flex flex-column">
     <Navbar :user="user" />
     <div id="background-image" class="bg-image">
-      <br />
-      <div class="container">
-        <div v-if="user" class="text-center">
+      <div v-if="user" class="d-flex flex-column gap-5 mt-5 text-center">
+        <div v-if="secretName" class="container">
           <h1>Hello {{ user.displayName }}</h1>
           <h2>You are {{ secretName }}'s Secret Santa!</h2>
           <h3>Their Wishlist</h3>
-          <span>Reminder: the limit is $50 total</span>
-          <ul class="list-group list-group-flush">
-            <li v-for="gift in gifts" v-bind:key="gift" class="list-group-item">
-              <span v-html="makeLink(gift)"></span>
-            </li>
-          </ul>
-          <br />
+          <div>
+            <span>Reminder: the limit is $50 total</span>
+            <ul class="list-group list-group-flush">
+              <li
+                v-for="gift in gifts"
+                v-bind:key="gift"
+                class="list-group-item"
+              >
+                <span v-html="makeLink(gift)"></span>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div v-else class="container">
+          <h1>Hello {{ user.displayName }}</h1>
+          <h2>You are not a Secret Santa!</h2>
+          <span>Please check back later.</span>
+        </div>
+        <div class="container mt-5 mb-5">
           <h3>Your Wishlist</h3>
           <div>
             <form v-on:submit.prevent="addNewGift" class="input-group">
@@ -38,8 +49,9 @@
               />
             </ul>
           </div>
-          <br />
         </div>
+      </div>
+      <div v-else class="d-flex flex-column text-center">
         <LoginForm :user="user" />
       </div>
     </div>
@@ -129,9 +141,6 @@ export default {
                     this.gifts = secretUser.data().gifts;
                   }
                 );
-              } else {
-                this.secretName = "no one";
-                this.gifts = [];
               }
               if (publicUser.data().gifts && publicUser.data().gifts.length) {
                 var id = 1;
@@ -141,8 +150,6 @@ export default {
                 });
               }
             });
-          } else {
-            this.secretName = "no one";
           }
         });
       } else {
@@ -167,7 +174,7 @@ export default {
 }
 #background-image {
   background-image: url("./assets/pexels-george-dolgikh-giftpunditscom.webp");
-  height: 100vh;
   background-size: cover;
+  text-shadow: 0 0 4px black;
 }
 </style>
