@@ -32,7 +32,7 @@
             <ul class="list-group">
               <GiftItem
                 v-for="(gift, index) in myGifts"
-                v-bind:key="gift.id"
+                v-bind:key="index"
                 v-bind:title="gift.title"
                 v-on:remove="removeGift(index)"
               />
@@ -70,6 +70,7 @@ export default {
       secretName: "",
       gifts: [],
       myGifts: [],
+      newGiftText: "",
     };
   },
   methods: {
@@ -82,7 +83,6 @@ export default {
     },
     addNewGift() {
       this.myGifts.push({
-        id: this.nextGiftId++,
         title: this.newGiftText,
       });
       this.newGiftText = "";
