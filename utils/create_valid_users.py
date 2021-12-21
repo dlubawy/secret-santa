@@ -90,17 +90,22 @@ def create_user_data(doc_ref, name=''):
     print(f'Created new user data for: \'{user.email}\'')
 
 
-for email, name in valid_users.items():
-    try:
-        user = auth.get_user_by_email(email)
-        print(f'User found for \'{email}\'.')
-    except auth.UserNotFoundError:
-        user = auth.create_user(email=email,
-                                password=secrets.token_urlsafe(14))
-        print(f'User not found for \'{email}\'. Created new user.')
-    except Exception as error:
-        # TODO: Add logging of the error
-        print(error)
-        raise error
+def main():
+    for email, name in valid_users.items():
+        try:
+            user = auth.get_user_by_email(email)
+            print(f'User found for \'{email}\'.')
+        except auth.UserNotFoundError:
+            user = auth.create_user(email=email,
+                                    password=secrets.token_urlsafe(14))
+            print(f'User not found for \'{email}\'. Created new user.')
+        except Exception as error:
+            # TODO: Add logging of the error
+            print(error)
+            raise error
 
-    validate_user_data(user, name)
+        validate_user_data(user, name)
+
+
+if __name__ == '__main__':
+    main()

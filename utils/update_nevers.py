@@ -48,14 +48,19 @@ def update(doc_ref, config):
     doc_ref.set(doc)
 
 
-for email, config in configs.items():
-    user = get_uid(email)
+def main():
+    for email, config in configs.items():
+        user = get_uid(email)
 
-    if user:
-        doc_ref = users_ref.document(user)
+        if user:
+            doc_ref = users_ref.document(user)
 
-        if doc_ref.get().exists:
-            update(doc_ref.collection('private').document('data'), config)
-            print(f'Updated config for: \'{email}\'')
-    else:
-        print(f'User not found for: \'{email}\'. Skipping.')
+            if doc_ref.get().exists:
+                update(doc_ref.collection('private').document('data'), config)
+                print(f'Updated config for: \'{email}\'')
+        else:
+            print(f'User not found for: \'{email}\'. Skipping.')
+
+
+if __name__ == '__main__':
+    main()
