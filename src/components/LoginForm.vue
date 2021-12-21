@@ -76,7 +76,9 @@ export default {
         }
       } else {
         resp = prompt("Enter your email address.");
-        sendPasswordResetEmail(auth, resp);
+        if (resp == true) {
+          sendPasswordResetEmail(auth, resp);
+        }
       }
     },
   },
