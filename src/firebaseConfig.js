@@ -18,4 +18,11 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
+if (process.env.NODE_ENV === "development") {
+  const emulators = require("./firebaseEmulators.js");
+
+  emulators.auth(auth, "http://localhost:9099");
+  emulators.firestore(db, "127.0.0.1", 8080);
+}
+
 export { auth, db };
