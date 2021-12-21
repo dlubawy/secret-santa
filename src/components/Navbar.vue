@@ -63,8 +63,8 @@ export default {
   },
   props: {
     user: {
-      type: String,
-      default: "",
+      type: Object,
+      default: null,
     },
   },
   methods: {

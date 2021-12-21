@@ -5,7 +5,7 @@
       <br />
       <div class="container">
         <div v-if="user" class="text-center">
-          <h1>Hello {{ user }}</h1>
+          <h1>Hello {{ user.displayName }}</h1>
           <h2>You are {{ secretName }}'s Secret Santa!</h2>
           <h3>Their Wishlist</h3>
           <span>Reminder: the limit is $50 total</span>
@@ -66,7 +66,7 @@ export default {
   name: "App",
   data() {
     return {
-      user: "",
+      user: null,
       secretName: "",
       gifts: [],
       myGifts: [],
@@ -94,7 +94,6 @@ export default {
         if (publicUser.data()) {
           setDoc(doc(userRef, auth.currentUser.uid), {
             gifts: gifts,
-            name: publicUser.data().name,
           });
         }
       });
@@ -109,7 +108,6 @@ export default {
         if (publicUser.data()) {
           setDoc(doc(userRef, auth.currentUser.uid), {
             gifts: gifts,
-            name: publicUser.data().name,
           });
         }
       });
@@ -118,6 +116,7 @@ export default {
   created() {
     auth.onAuthStateChanged((user) => {
       if (user) {
+        this.user = user;
         getDoc(doc(userRef, user.uid)).then((publicUser) => {
           if (publicUser.data()) {
             const privateRef = collection(userRef, user.uid, "private");
@@ -134,7 +133,6 @@ export default {
                 this.secretName = "no one";
                 this.gifts = [];
               }
-              this.user = publicUser.data().name;
               if (publicUser.data().gifts && publicUser.data().gifts.length) {
                 var id = 1;
                 publicUser.data().gifts.forEach((gift) => {
@@ -144,12 +142,11 @@ export default {
               }
             });
           } else {
-            this.user = "No Name";
             this.secretName = "no one";
           }
         });
       } else {
-        this.user = "";
+        this.user = null;
         this.secretName = "";
         this.gifts = [];
         this.myGifts = [];

@@ -52,7 +52,7 @@ export default {
     };
   },
   props: {
-    user: String,
+    user: Object,
   },
   methods: {
     login() {
