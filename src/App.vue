@@ -1,57 +1,61 @@
 <template>
   <div id="app" class="d-flex flex-column">
-    <Navbar :user="user" />
-    <div id="background-image" class="bg-image">
-      <div v-if="user" class="d-flex flex-column gap-5 mt-5 text-center">
-        <div v-if="secretName" class="container">
-          <h1>Hello {{ user.displayName }}</h1>
-          <h2>You are {{ secretName }}'s Secret Santa!</h2>
-          <h3>Their Wishlist</h3>
-          <div>
-            <span>Reminder: the limit is $50 total</span>
-            <ul class="list-group list-group-flush">
-              <li
-                v-for="gift in gifts"
-                v-bind:key="gift"
-                class="list-group-item"
-              >
-                <span v-html="makeLink(gift)"></span>
-              </li>
-            </ul>
+    <div id="background-image" class="bg-image flex-fill">
+      <Navbar :user="user" />
+      <div v-if="user" class="container text-center pt-5">
+        <h1>Hello {{ user.displayName }}</h1>
+        <div class="d-flex flex-column gap-5">
+          <div v-if="secretName" class="row">
+            <h2>You are {{ secretName }}'s Secret Santa!</h2>
+            <h3>Their Wishlist</h3>
+            <div>
+              <span>Reminder: the limit is $50 total</span>
+              <ul class="list-group list-group-flush pt-3">
+                <li
+                  v-for="gift in gifts"
+                  v-bind:key="gift"
+                  class="list-group-item"
+                >
+                  <span v-html="makeLink(gift)"></span>
+                </li>
+              </ul>
+            </div>
           </div>
-        </div>
-        <div v-else class="container">
-          <h1>Hello {{ user.displayName }}</h1>
-          <h2>You are not a Secret Santa!</h2>
-          <span>Please check back later.</span>
-        </div>
-        <div class="container mt-5 mb-5">
-          <h3>Your Wishlist</h3>
-          <div>
-            <form v-on:submit.prevent="addNewGift" class="input-group">
-              <label for="new-gift" class="input-group-text"
-                >Add a gift ($50/gift limit)</label
+          <div v-else class="row">
+            <h2>You are not a Secret Santa!</h2>
+            <span>Please check back later.</span>
+          </div>
+          <div class="row pb-3">
+            <h3>Your Wishlist</h3>
+            <div>
+              <form
+                v-on:submit.prevent="addNewGift"
+                class="input-group justify-content-center"
               >
-              <input
-                v-model="newGiftText"
-                id="new-gift"
-                placeholder="E.g. socks or a link to Amazon wish list"
-                class="form-control"
-              />
-              <button class="btn btn-primary">Add</button>
-            </form>
-            <ul class="list-group">
-              <GiftItem
-                v-for="(gift, index) in myGifts"
-                v-bind:key="index"
-                v-bind:title="gift.title"
-                v-on:remove="removeGift(index)"
-              />
-            </ul>
+                <label for="new-gift" class="input-group-text"
+                  >Add a gift ($50/gift limit)</label
+                >
+                <input
+                  v-model="newGiftText"
+                  id="new-gift"
+                  placeholder="E.g. socks or a link to Amazon wish list"
+                  class="form-control"
+                />
+                <button class="btn btn-primary">Add</button>
+              </form>
+              <ul class="list-group">
+                <GiftItem
+                  v-for="(gift, index) in myGifts"
+                  v-bind:key="index"
+                  v-bind:title="gift.title"
+                  v-on:remove="removeGift(index)"
+                />
+              </ul>
+            </div>
           </div>
         </div>
       </div>
-      <div v-else class="d-flex flex-column text-center">
+      <div v-else class="container pt-5">
         <LoginForm :user="user" />
       </div>
     </div>

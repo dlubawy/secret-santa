@@ -1,10 +1,10 @@
 <template>
   <li class="list-group-item">
     <div class="row justify-content-center">
-      <div class="col-sm-10 m-auto">
+      <div class="col-sm-10 align-self-center">
         <span v-html="makeLink(title)"></span>
       </div>
-      <div class="col-sm-2 m-auto">
+      <div class="col-sm-2 align-self-center">
         <button v-on:click="$emit('remove')" class="btn btn-warning">
           Remove
         </button>
