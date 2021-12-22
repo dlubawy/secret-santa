@@ -66,7 +66,10 @@ export default {
             errorCode === "auth/wrong-password" ||
             errorCode === "auth/user-not-found"
           ) {
-            alert("Invalid credentials.");
+            this.$emit("addAlert", {
+              text: "Invalid credentials.",
+              type: "danger",
+            });
           }
         }
       );

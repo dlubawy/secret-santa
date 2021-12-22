@@ -2,61 +2,64 @@
   <div id="app" class="d-flex flex-column">
     <div id="background-image" class="bg-image flex-fill">
       <Navbar :user="user" />
-      <div v-if="user" class="container text-center pt-5">
-        <h1>Hello {{ user.displayName }}</h1>
-        <div class="d-flex flex-column gap-5">
-          <div v-if="secretName" class="row">
-            <h2>You are {{ secretName }}'s Secret Santa!</h2>
-            <h3>Their Wishlist</h3>
-            <div>
-              <span>Reminder: the limit is $50 total</span>
-              <ul class="list-group list-group-flush pt-3">
-                <li
-                  v-for="gift in gifts"
-                  v-bind:key="gift"
-                  class="list-group-item"
-                >
-                  <span v-html="makeLink(gift)"></span>
-                </li>
-              </ul>
+      <Alerts v-bind:alerts="alerts" v-on:remove="removeAlert" />
+      <div id="main">
+        <div v-if="user" class="container text-center pt-5">
+          <h1>Hello {{ user.displayName }}</h1>
+          <div class="d-flex flex-column gap-5">
+            <div v-if="secretName" class="row">
+              <h2>You are {{ secretName }}'s Secret Santa!</h2>
+              <h3>Their Wishlist</h3>
+              <div>
+                <span>Reminder: the limit is $50 total</span>
+                <ul class="list-group list-group-flush pt-3">
+                  <li
+                    v-for="gift in gifts"
+                    v-bind:key="gift"
+                    class="list-group-item"
+                  >
+                    <span v-html="makeLink(gift)"></span>
+                  </li>
+                </ul>
+              </div>
             </div>
-          </div>
-          <div v-else class="row">
-            <h2>You are not a Secret Santa!</h2>
-            <span>Please check back later.</span>
-          </div>
-          <div class="row pb-3">
-            <h3>Your Wishlist</h3>
-            <div>
-              <form
-                v-on:submit.prevent="addNewGift"
-                class="input-group justify-content-center"
-              >
-                <label for="new-gift" class="input-group-text"
-                  >Add a gift ($50/gift limit)</label
+            <div v-else class="row">
+              <h2>You are not a Secret Santa!</h2>
+              <span>Please check back later.</span>
+            </div>
+            <div class="row pb-3">
+              <h3>Your Wishlist</h3>
+              <div>
+                <form
+                  v-on:submit.prevent="addNewGift"
+                  class="input-group justify-content-center"
                 >
-                <input
-                  v-model="newGiftText"
-                  id="new-gift"
-                  placeholder="E.g. socks or a link to Amazon wish list"
-                  class="form-control"
-                />
-                <button class="btn btn-primary">Add</button>
-              </form>
-              <ul class="list-group">
-                <GiftItem
-                  v-for="(gift, index) in myGifts"
-                  v-bind:key="index"
-                  v-bind:title="gift.title"
-                  v-on:remove="removeGift(index)"
-                />
-              </ul>
+                  <label for="new-gift" class="input-group-text"
+                    >Add a gift ($50/gift limit)</label
+                  >
+                  <input
+                    v-model="newGiftText"
+                    id="new-gift"
+                    placeholder="E.g. socks or a link to Amazon wish list"
+                    class="form-control"
+                  />
+                  <button class="btn btn-primary">Add</button>
+                </form>
+                <ul class="list-group">
+                  <GiftItem
+                    v-for="(gift, index) in myGifts"
+                    v-bind:key="index"
+                    v-bind:title="gift.title"
+                    v-on:remove="removeGift(index)"
+                  />
+                </ul>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-      <div v-else class="container pt-5">
-        <LoginForm :user="user" />
+        <div v-else class="container pt-5">
+          <LoginForm :user="user" v-on:addAlert="addAlert" />
+        </div>
       </div>
     </div>
   </div>
@@ -66,6 +69,7 @@
 import Navbar from "./components/Navbar.vue";
 import LoginForm from "./components/LoginForm.vue";
 import GiftItem from "./components/GiftItem.vue";
+import Alerts from "./components/Alerts.vue";
 
 import {
   doc,
@@ -87,6 +91,7 @@ export default {
       gifts: [],
       myGifts: [],
       newGiftText: "",
+      alerts: [],
     };
   },
   methods: {
@@ -128,6 +133,12 @@ export default {
         }
       });
     },
+    addAlert(message) {
+      this.alerts.push(message);
+    },
+    removeAlert(index) {
+      this.alerts.splice(index, this.alerts.length);
+    },
   },
   created() {
     auth.onAuthStateChanged((user) => {
@@ -168,6 +179,7 @@ export default {
     Navbar,
     LoginForm,
     GiftItem,
+    Alerts,
   },
 };
 </script>
@@ -179,6 +191,8 @@ export default {
 #background-image {
   background-image: url("./assets/pexels-george-dolgikh-giftpunditscom.webp");
   background-size: cover;
+}
+#main {
   text-shadow: 0 0 4px black;
 }
 </style>
