@@ -1,5 +1,5 @@
 <template>
-  <div id="alerts">
+  <div id="alerts" class="fixed-top">
     <div
       v-for="(alert, index) in alerts"
       v-bind:class="getClass(alert.type)"

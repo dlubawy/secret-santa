@@ -5,7 +5,7 @@
         <span v-html="makeLink(title)"></span>
       </div>
       <div class="col-sm-2 align-self-center">
-        <button v-on:click="$emit('remove')" class="btn btn-warning">
+        <button v-on:click="$emit('remove')" class="btn-sm btn-warning">
           Remove
         </button>
       </div>

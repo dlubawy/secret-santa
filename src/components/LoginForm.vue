@@ -3,25 +3,27 @@
     <h1 class="text-center">Please sign in</h1>
     <form v-on:submit.prevent="login">
       <div class="container">
-        <label for="exampleInputEmail1" class="form-label">Email address</label>
+        <label for="inputEmail1" class="form-label">Email address</label>
         <input
           v-model="email"
           type="email"
           class="form-control"
-          id="exampleInputEmail1"
+          id="inputEmail1"
           aria-describedby="emailHelp"
+          required="true"
         />
         <div id="emailHelp" class="form-text">
           We'll never share your email with anyone else.
         </div>
       </div>
       <div class="container">
-        <label for="exampleInputPassword1" class="form-label">Password</label>
+        <label for="inputPassword1" class="form-label">Password</label>
         <input
           v-model="password"
           type="password"
           class="form-control"
-          id="exampleInputPassword1"
+          id="inputPassword1"
+          required="true"
         />
       </div>
       <div class="container">
@@ -78,12 +80,16 @@ export default {
       if (this.email) {
         var resp = confirm(`Send email to ${this.email} for password reset?`);
         if (resp == true) {
-          sendPasswordResetEmail(auth, this.email);
+          sendPasswordResetEmail(auth, this.email).then(() => {
+            this.$emit("addAlert", { text: "Email sent.", type: "success" });
+          });
         }
       } else {
         resp = prompt("Enter your email address.");
         if (resp == true) {
-          sendPasswordResetEmail(auth, resp);
+          sendPasswordResetEmail(auth, resp).then(() => {
+            this.$emit("addAlert", { text: "Email sent.", type: "success" });
+          });
         }
       }
     },

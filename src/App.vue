@@ -14,8 +14,8 @@
                 <span>Reminder: the limit is $50 total</span>
                 <ul class="list-group list-group-flush pt-3">
                   <li
-                    v-for="gift in gifts"
-                    v-bind:key="gift"
+                    v-for="(gift, index) in gifts"
+                    v-bind:key="index"
                     class="list-group-item"
                   >
                     <span v-html="makeLink(gift)"></span>
@@ -38,10 +38,11 @@
                     >Add a gift ($50/gift limit)</label
                   >
                   <input
-                    v-model="newGiftText"
+                    v-model="newGift"
                     id="new-gift"
                     placeholder="E.g. socks or a link to Amazon wish list"
                     class="form-control"
+                    required="true"
                   />
                   <button class="btn btn-primary">Add</button>
                 </form>
@@ -49,7 +50,7 @@
                   <GiftItem
                     v-for="(gift, index) in myGifts"
                     v-bind:key="index"
-                    v-bind:title="gift.title"
+                    v-bind:title="gift"
                     v-on:remove="removeGift(index)"
                   />
                 </ul>
@@ -90,7 +91,7 @@ export default {
       secretName: "",
       gifts: [],
       myGifts: [],
-      newGiftText: "",
+      newGift: "",
       alerts: [],
     };
   },
@@ -103,35 +104,45 @@ export default {
       });
     },
     addNewGift() {
-      this.myGifts.push({
-        title: this.newGiftText,
-      });
-      this.newGiftText = "";
-      var gifts = [];
-      this.myGifts.forEach((gift) => {
-        gifts.push(gift.title);
-      });
-      getDoc(doc(userRef, auth.currentUser.uid)).then((publicUser) => {
-        if (publicUser.data()) {
-          setDoc(doc(userRef, auth.currentUser.uid), {
-            gifts: gifts,
-          });
-        }
-      });
+      getDoc(doc(userRef, auth.currentUser.uid))
+        .then((publicUser) => {
+          if (publicUser.data()) {
+            this.myGifts.push(this.newGift);
+            this.newGift = "";
+            setDoc(doc(userRef, auth.currentUser.uid), {
+              gifts: this.myGifts,
+              name: this.user.displayName,
+            });
+          }
+        })
+        .catch((error) => {
+          if (error.code === "unavailable") {
+            this.addAlert({
+              text: "Failed to add gift because the client is offline.",
+              type: "warning",
+            });
+          }
+        });
     },
     removeGift(index) {
-      this.myGifts.splice(index, 1);
-      var gifts = [];
-      this.myGifts.forEach((gift) => {
-        gifts.push(gift.title);
-      });
-      getDoc(doc(userRef, auth.currentUser.uid)).then((publicUser) => {
-        if (publicUser.data()) {
-          setDoc(doc(userRef, auth.currentUser.uid), {
-            gifts: gifts,
-          });
-        }
-      });
+      getDoc(doc(userRef, auth.currentUser.uid))
+        .then((publicUser) => {
+          if (publicUser.data()) {
+            this.myGifts.splice(index, 1);
+            setDoc(doc(userRef, auth.currentUser.uid), {
+              gifts: this.myGifts,
+              name: this.user.displayName,
+            });
+          }
+        })
+        .catch((error) => {
+          if (error.code === "unavailable") {
+            this.addAlert({
+              text: "Failed to remove gift because the client is offline.",
+              type: "warning",
+            });
+          }
+        });
     },
     addAlert(message) {
       this.alerts.push(message);
@@ -144,29 +155,32 @@ export default {
     auth.onAuthStateChanged((user) => {
       if (user) {
         this.user = user;
-        getDoc(doc(userRef, user.uid)).then((publicUser) => {
-          if (publicUser.data()) {
-            const privateRef = collection(userRef, user.uid, "private");
-            getDoc(doc(privateRef, "data")).then((privateUser) => {
-              if (privateUser.data().secret && privateUser.data().secret.uid) {
-                onSnapshot(
-                  doc(userRef, privateUser.data().secret.uid),
-                  (secretUser) => {
-                    this.secretName = secretUser.data().name;
-                    this.gifts = secretUser.data().gifts;
-                  }
-                );
-              }
+        getDoc(doc(userRef, user.uid))
+          .then((publicUser) => {
+            if (publicUser.data()) {
+              const privateRef = collection(userRef, user.uid, "private");
+              getDoc(doc(privateRef, "data")).then((privateUser) => {
+                if (
+                  privateUser.data().secret &&
+                  privateUser.data().secret.uid
+                ) {
+                  onSnapshot(
+                    doc(userRef, privateUser.data().secret.uid),
+                    (secretUser) => {
+                      this.secretName = secretUser.data().name;
+                      this.gifts = secretUser.data().gifts;
+                    }
+                  );
+                }
+              });
               if (publicUser.data().gifts && publicUser.data().gifts.length) {
-                var id = 1;
-                publicUser.data().gifts.forEach((gift) => {
-                  this.myGifts.push({ id: id, title: gift });
-                  id += 1;
-                });
+                this.myGifts = publicUser.data().gifts;
               }
-            });
-          }
-        });
+            }
+          })
+          .catch((error) => {
+            this.addAlert({ text: error.message, type: "warning" });
+          });
       } else {
         this.user = null;
         this.secretName = "";
