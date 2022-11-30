@@ -1,8 +1,8 @@
 <template>
   <div id="app" class="d-flex flex-column">
     <div id="background-image" class="bg-image flex-fill">
-      <Navbar :user="user" />
-      <Alerts v-bind:alerts="alerts" v-on:remove="removeAlert" />
+      <NavBar :user="user" />
+      <AlertMessages v-bind:alerts="alerts" v-on:remove="removeAlert" />
       <div id="main">
         <div v-if="user" class="container text-center pt-5">
           <h1>Hello {{ user.displayName }}</h1>
@@ -67,10 +67,10 @@
 </template>
 
 <script>
-import Navbar from "./components/Navbar.vue";
+import NavBar from "./components/NavBar.vue";
 import LoginForm from "./components/LoginForm.vue";
 import GiftItem from "./components/GiftItem.vue";
-import Alerts from "./components/Alerts.vue";
+import AlertMessages from "./components/AlertMessages.vue";
 
 import {
   doc,
@@ -190,10 +190,10 @@ export default {
     });
   },
   components: {
-    Navbar,
+    NavBar,
     LoginForm,
     GiftItem,
-    Alerts,
+    AlertMessages,
   },
 };
 </script>

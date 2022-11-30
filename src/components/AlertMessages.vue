@@ -20,7 +20,7 @@
 
 <script>
 export default {
-  name: "Alerts",
+  name: "AlertMessages",
   props: {
     alerts: Array,
   },

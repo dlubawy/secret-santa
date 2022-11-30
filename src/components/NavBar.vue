@@ -54,7 +54,7 @@ import { auth } from "../firebaseConfig.js";
 import { signOut, sendPasswordResetEmail } from "firebase/auth";
 
 export default {
-  name: "Navbar",
+  name: "NavBar",
   data() {
     return {
       email: "",
