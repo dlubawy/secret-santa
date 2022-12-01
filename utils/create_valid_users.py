@@ -87,7 +87,7 @@ def create_user_data(doc_ref, name=''):
         doc_ref.set(dict(secret=dict(uid='', never=[], previous='')))
     else:
         doc_ref.set(dict(name=name, gifts=[]))
-    print(f'Created new user data for: \'{user.email}\'')
+    print(f'Created new user data for: \'{name}\'')
 
 
 def main():
