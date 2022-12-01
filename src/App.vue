@@ -29,8 +29,39 @@
             </div>
             <div class="row pb-3">
               <h3>Your Wishlist</h3>
+              <div class="form-switch">
+                <input
+                  v-model="isLocked"
+                  v-on:click="toggleLock"
+                  class="form-check-input"
+                  type="checkbox"
+                  id="flexSwitchCheckDefault"
+                />
+                <label class="form-check-label" for="flexSwitchCheckDefault"
+                  >Lock Gifts</label
+                >
+              </div>
               <div>
                 <form
+                  v-if="isLocked"
+                  v-on:submit.prevent="addNewGift"
+                  class="input-group justify-content-center"
+                >
+                  <label for="new-gift" class="input-group-text"
+                    >Add a gift ($50/gift limit)</label
+                  >
+                  <input
+                    v-model="newGift"
+                    id="new-gift"
+                    placeholder="E.g. socks or a link to Amazon wish list"
+                    class="form-control"
+                    required="true"
+                    disabled
+                  />
+                  <button class="btn btn-primary" disabled>Add</button>
+                </form>
+                <form
+                  v-else
                   v-on:submit.prevent="addNewGift"
                   class="input-group justify-content-center"
                 >
@@ -51,6 +82,7 @@
                     v-for="(gift, index) in myGifts"
                     v-bind:key="index"
                     v-bind:title="gift"
+                    v-bind:isLocked="isLocked"
                     v-on:remove="removeGift(index)"
                   />
                 </ul>
@@ -88,6 +120,7 @@ export default {
   data() {
     return {
       user: null,
+      isLocked: true,
       secretName: "",
       gifts: [],
       myGifts: [],
@@ -103,6 +136,26 @@ export default {
         return `<a href="${matched}"><div class="text-truncate">${matched}</div></a>`;
       });
     },
+    toggleLock() {
+      getDoc(doc(userRef, auth.currentUser.uid))
+        .then((publicUser) => {
+          if (publicUser.data()) {
+            setDoc(doc(userRef, auth.currentUser.uid), {
+              gifts: this.myGifts,
+              name: this.user.displayName,
+              isLocked: this.isLocked,
+            });
+          }
+        })
+        .catch((error) => {
+          if (error.code === "unavailable") {
+            this.addAlert({
+              text: "Failed to lock your list because the client is offline.",
+              type: "warning",
+            });
+          }
+        });
+    },
     addNewGift() {
       getDoc(doc(userRef, auth.currentUser.uid))
         .then((publicUser) => {
@@ -112,6 +165,7 @@ export default {
             setDoc(doc(userRef, auth.currentUser.uid), {
               gifts: this.myGifts,
               name: this.user.displayName,
+              isLocked: this.isLocked,
             });
           }
         })
@@ -132,6 +186,7 @@ export default {
             setDoc(doc(userRef, auth.currentUser.uid), {
               gifts: this.myGifts,
               name: this.user.displayName,
+              isLocked: this.isLocked,
             });
           }
         })
@@ -175,6 +230,7 @@ export default {
               });
               if (publicUser.data().gifts && publicUser.data().gifts.length) {
                 this.myGifts = publicUser.data().gifts;
+                this.isLocked = publicUser.data().isLocked;
               }
             }
           })
@@ -183,6 +239,7 @@ export default {
           });
       } else {
         this.user = null;
+        this.locked = true;
         this.secretName = "";
         this.gifts = [];
         this.myGifts = [];
