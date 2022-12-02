@@ -152,7 +152,7 @@ export default {
         .catch((error) => {
           if (error.code === "unavailable") {
             this.addAlert({
-              text: "Failed to lock your list because the client is offline.",
+              text: "Failed to toggle the lock on your list because the client is offline.",
               type: "warning",
             });
           }
