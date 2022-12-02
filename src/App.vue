@@ -30,6 +30,8 @@
             </div>
             <div class="row pb-3">
               <h3>Your Wishlist</h3>
+              <h4>Time left to finish list:</h4>
+              <h4><CountdownTimer /></h4>
               <div class="form-switch">
                 <input
                   v-model="isLocked"
@@ -104,6 +106,7 @@ import NavBar from "./components/NavBar.vue";
 import LoginForm from "./components/LoginForm.vue";
 import GiftItem from "./components/GiftItem.vue";
 import AlertMessages from "./components/AlertMessages.vue";
+import CountdownTimer from "./components/CountdownTimer.vue";
 
 import {
   doc,
@@ -255,6 +258,7 @@ export default {
     LoginForm,
     GiftItem,
     AlertMessages,
+    CountdownTimer,
   },
 };
 </script>
