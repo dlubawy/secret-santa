@@ -10,8 +10,8 @@ export default {
   data() {
     return {
       timeLeft:
-        new Date("1970-12-25").setFullYear(new Date().getFullYear()) -
-        1000 * 60 * 60 * 24 * 12 -
+        new Date(`${new Date().getFullYear()}-12-25T00:00:00`) -
+        1000 * 60 * 60 * 24 * 14 -
         new Date(),
     };
   },
