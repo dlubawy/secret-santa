@@ -29,7 +29,7 @@ def new_santa_msg(emails):
     #pylint:disable=line-too-long
     message = Mail(
         from_email='secret-santa@andrewlubawy.com',
-        to_emails=emails,
+        bcc_emails=emails,
         subject='🎁 New Secret Santa! 🎁',
         html_content=
         f'<p>Secret Santa has been updated! <a href="secret-santa.andrewlubawy.com">Login</a> '\
@@ -78,7 +78,7 @@ def get_missing_msgs(emails):
     for email in missing:
         messages.append(Mail(
             from_email='secret-santa@andrewlubawy.com',
-            to_emails=email,
+            bcc_emails=email,
             subject='You don\'t have any gifts!',
             html_content=
             f'<p>You are running out of time! '\
