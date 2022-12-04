@@ -15,6 +15,10 @@ In `utils/randomize_santas.py`, the algorithm for determining who get who is as 
    node in the queue
 3. Continue in this manner until the queue is exhausted or until a node is seen
    again (i.e. cannot create a complete network with current settings)
+   
+## Screenshot
+
+![Screenshot_20221203_155247](https://user-images.githubusercontent.com/12501720/205467577-0c78c20c-5dfa-4e1d-aa5e-d7f94d0519e3.png)
 
 ## Project setup
 
