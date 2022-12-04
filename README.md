@@ -18,7 +18,7 @@ In `utils/randomize_santas.py`, the algorithm for determining who get who is as 
    
 ## Screenshot
 
-![Screenshot_20221203_155247](https://user-images.githubusercontent.com/12501720/205467577-0c78c20c-5dfa-4e1d-aa5e-d7f94d0519e3.png)
+![Screenshot_20221203_161345](https://user-images.githubusercontent.com/12501720/205467651-33041f00-73a6-4b18-923a-8ed6f033a788.png)
 
 ## Project setup
 
