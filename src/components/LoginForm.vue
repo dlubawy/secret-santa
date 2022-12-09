@@ -86,7 +86,7 @@ export default {
         }
       } else {
         resp = prompt("Enter your email address.");
-        if (resp == true) {
+        if (resp !== null) {
           sendPasswordResetEmail(auth, resp).then(() => {
             this.$emit("addAlert", { text: "Email sent.", type: "success" });
           });
