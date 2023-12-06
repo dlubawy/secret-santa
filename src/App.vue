@@ -9,8 +9,8 @@
           <div class="d-flex flex-column gap-5">
             <div v-if="secretName" class="row">
               <h2>You are {{ secretName }}'s Secret Santa!</h2>
-              <h3 v-if="secretLocked">Their Wishlist 🔒</h3>
-              <h3 v-else>Their Wishlist 🔓</h3>
+              <h3 v-if="secretLocked">Their Wishlist ✅</h3>
+              <h3 v-else>Their Wishlist ⛔</h3>
               <div>
                 <span>Reminder: the limit is $50 total</span>
                 <ul class="list-group list-group-flush pt-3">
