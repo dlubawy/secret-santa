@@ -1,37 +1,50 @@
 <template>
   <div id="loginForm">
-    <h1 class="text-center">Please sign in</h1>
-    <form v-on:submit.prevent="login">
+    <h1 class="text-center">
+      Please sign in
+    </h1>
+    <form @submit.prevent="login">
       <div class="container">
-        <label for="inputEmail1" class="form-label">Email address</label>
+        <label
+          for="inputEmail1"
+          class="form-label"
+        >Email address</label>
         <input
+          id="inputEmail1"
           v-model="email"
           type="email"
           class="form-control"
-          id="inputEmail1"
           aria-describedby="emailHelp"
           required="true"
-        />
-        <div id="emailHelp" class="form-text">
+        >
+        <div
+          id="emailHelp"
+          class="form-text"
+        >
           We'll never share your email with anyone else.
         </div>
       </div>
       <div class="container">
-        <label for="inputPassword1" class="form-label">Password</label>
+        <label
+          for="inputPassword1"
+          class="form-label"
+        >Password</label>
         <input
+          id="inputPassword1"
           v-model="password"
           type="password"
           class="form-control"
-          id="inputPassword1"
           required="true"
-        />
+        >
       </div>
       <div class="container">
-        <button class="btn btn-primary">Submit</button>
+        <button class="btn btn-primary">
+          Submit
+        </button>
         <button
-          v-on:click="passwordReset"
           type="button"
           class="btn btn-secondary"
+          @click="passwordReset"
         >
           Password Reset
         </button>
@@ -50,14 +63,14 @@ import { auth } from "../firebaseConfig.js";
 
 export default {
   name: "LoginForm",
+  props: {
+    user: Object,
+  },
   data() {
     return {
       email: "",
       password: "",
     };
-  },
-  props: {
-    user: Object,
   },
   methods: {
     login() {

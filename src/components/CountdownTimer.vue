@@ -26,15 +26,15 @@ export default {
       )}m ${Math.floor(seconds)}s`;
     },
   },
+  mounted() {
+    this.startTimer();
+  },
   methods: {
     startTimer() {
       setInterval(() => {
         this.timeLeft -= 1000;
       }, 1000);
     },
-  },
-  mounted() {
-    this.startTimer();
   },
 };
 </script>

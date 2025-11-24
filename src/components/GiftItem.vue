@@ -2,13 +2,13 @@
   <li class="list-group-item">
     <div class="row justify-content-center">
       <div class="col-sm-10 align-self-center">
-        <span v-html="makeLink(title)"></span>
+        <span v-html="makeLink(title)" />
       </div>
       <div class="col-sm-2 align-self-center">
         <button
           v-if="!isLocked"
-          v-on:click="$emit('remove')"
           class="btn-sm btn-warning"
+          @click="$emit('remove')"
         >
           Remove
         </button>
@@ -20,6 +20,10 @@
 <script>
 export default {
   name: "GiftItem",
+  props: {
+    title: String,
+    isLocked: Boolean,
+  },
   methods: {
     makeLink(text) {
       let exp =
@@ -28,10 +32,6 @@ export default {
         return `<a href="${matched}"><div class="text-truncate">${matched}</div></a>`;
       });
     },
-  },
-  props: {
-    title: String,
-    isLocked: Boolean,
   },
 };
 </script>

@@ -1,10 +1,13 @@
 <template>
-  <div id="alerts" class="fixed-top">
+  <div
+    id="alerts"
+    class="fixed-top"
+  >
     <div
       v-for="(alert, index) in alerts"
-      v-bind:class="getClass(alert.type)"
+      :key="index"
+      :class="getClass(alert.type)"
       role="alert"
-      v-bind:key="index"
     >
       {{ alert.text }}
       <button
@@ -12,8 +15,8 @@
         class="btn-close"
         data-bs-dismiss="alert"
         aria-label="Close"
-        v-on:click="$emit('remove', index)"
-      ></button>
+        @click="$emit('remove', index)"
+      />
     </div>
   </div>
 </template>
