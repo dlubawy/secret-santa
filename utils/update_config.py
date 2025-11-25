@@ -1,3 +1,10 @@
+"""Update user config file with current data.
+
+Reads from the firestore DB and updates user config file based on current data.
+User config file located at XDG_CONFIG_HOME/secret-santa/user_config.json
+"""
+
+import argparse
 import csv
 import json
 import os
@@ -11,16 +18,6 @@ CREDENTIALS = f"{HOME}/.config/firebase/credentials.json"
 USERS = f"{HOME}/.config/secret-santa/users.csv"
 USER_CONFIG = f"{HOME}/.config/secret-santa/user_config.json"
 
-with open(USERS, "r", encoding="utf-8") as csvfile:
-    valid_users = {row["email"]: row["name"] for row in csv.DictReader(csvfile)}
-
-cred = credentials.Certificate(CREDENTIALS)
-firebase_admin.initialize_app(cred)
-
-db = firestore.client()
-
-users_ref = db.collection("users")
-
 
 def get_uid(email):
     try:
@@ -33,7 +30,21 @@ def get_uid(email):
         raise error
 
 
-def main():
+def main(prod=False):
+    if not prod:
+        os.environ["FIRESTORE_EMULATOR_HOST"] = "127.0.0.1:8080"
+        os.environ["FIREBASE_AUTH_EMULATOR_HOST"] = "127.0.0.1:9099"
+
+    with open(USERS, "r", encoding="utf-8") as csvfile:
+        valid_users = {row["email"]: row["name"] for row in csv.DictReader(csvfile)}
+
+    cred = credentials.Certificate(CREDENTIALS)
+    firebase_admin.initialize_app(cred)
+
+    db = firestore.client()
+
+    users_ref = db.collection("users")
+
     config = {}
 
     for email in valid_users.keys():
@@ -64,4 +75,14 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    parser = argparse.ArgumentParser(
+        description="Create valid user data according to schema."
+    )
+    parser.add_argument(
+        "--prod",
+        help="Flag for production use",
+        action=argparse.BooleanOptionalAction,
+        default=False,
+    )
+    args = parser.parse_args()
+    main(args.prod)

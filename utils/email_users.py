@@ -7,36 +7,37 @@ from datetime import datetime, timedelta
 from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail
 
-HOME = os.environ.get('HOME')
-USERS = f'{HOME}/.config/secret-santa/users.csv'
-EMAIL_CONFIG = f'{HOME}/.config/sendgrid/config.ini'
-CREDENTIALS = f'{HOME}/.config/firebase/credentials.json'
+HOME = os.environ.get("HOME")
+USERS = f"{HOME}/.config/secret-santa/users.csv"
+EMAIL_CONFIG = f"{HOME}/.config/sendgrid/config.ini"
+CREDENTIALS = f"{HOME}/.config/firebase/credentials.json"
 
 config = configparser.ConfigParser()
 config.read(EMAIL_CONFIG)
-API_KEY = config['secret-santa']['API_KEY']
+API_KEY = config["secret-santa"]["API_KEY"]
 
-with open(USERS, 'r', encoding='utf-8') as csvfile:
-    email_list = [row['email'] for row in csv.DictReader(csvfile)]
+
+def ordinal(n):
+    return "%d%s" % (
+        n,
+        "tsnrhtdd"[(n // 10 % 10 != 1) * (n % 10 < 4) * n % 10 :: 4],
+    )
 
 
 def new_santa_msg(emails):
-    ordinal = lambda n: "%d%s" % (n, "tsnrhtdd"[(n // 10 % 10 != 1) *
-                                                (n % 10 < 4) * n % 10::4])
     year = datetime.utcnow().year
-    christmas = datetime.strptime(f'{year}-12-25', '%Y-%m-%d')
+    christmas = datetime.strptime(f"{year}-12-25", "%Y-%m-%d")
     day = ordinal((christmas - timedelta(weeks=2)).day)
-    #pylint:disable=line-too-long
+    # pylint:disable=line-too-long
     message = Mail(
-        from_email='secret-santa@andrewlubawy.com',
+        from_email="secret-santa@andrewlubawy.com",
         bcc_emails=emails,
-        subject='🎁 New Secret Santa! 🎁',
-        html_content=
-        f'<p>Secret Santa has been updated! <a href="secret-santa.andrewlubawy.com">Login</a> '\
-        f'to view your new assignment and please make sure your own wish list is up to date. '\
-        f'<strong>Lists should be finalized by December {day}!</strong></p>'
+        subject="🎁 New Secret Santa! 🎁",
+        html_content=f'<p>Secret Santa has been updated! <a href="secret-santa.andrewlubawy.com">Login</a> '
+        f"to view your new assignment and please make sure your own wish list is up to date. "
+        f"<strong>Lists should be finalized by December {day}!</strong></p>",
     )
-    #pylint:enable=line-too-long
+    # pylint:enable=line-too-long
 
     return message
 
@@ -53,7 +54,7 @@ def get_missing_msgs(emails):
 
     db = firestore.client()
 
-    users_ref = db.collection('users')
+    users_ref = db.collection("users")
 
     missing = set()
 
@@ -62,31 +63,30 @@ def get_missing_msgs(emails):
         doc = users_ref.document(user.uid).get()
 
         if doc.exists:
-            gifts = doc.to_dict()['gifts']
+            gifts = doc.to_dict()["gifts"]
 
             if not gifts:
                 missing.add(email)
 
-    ordinal = lambda n: "%d%s" % (n, "tsnrhtdd"[(n // 10 % 10 != 1) *
-                                                (n % 10 < 4) * n % 10::4])
     year = datetime.utcnow().year
-    christmas = datetime.strptime(f'{year}-12-25', '%Y-%m-%d')
+    christmas = datetime.strptime(f"{year}-12-25", "%Y-%m-%d")
     day = ordinal((christmas - timedelta(weeks=2)).day)
-    #pylint:disable=line-too-long
+    # pylint:disable=line-too-long
     messages = []
 
     for email in missing:
-        messages.append(Mail(
-            from_email='secret-santa@andrewlubawy.com',
-            bcc_emails=email,
-            subject='You don\'t have any gifts!',
-            html_content=
-            f'<p>You are running out of time! '\
-            f'<strong>Lists should be finalized by December {day}!</strong></p> '\
-            f'Please <a href="secret-santa.andrewlubawy.com">login</a> '\
-            f'to update your wish list now.'\
-        ))
-    #pylint:enable=line-too-long
+        messages.append(
+            Mail(
+                from_email="secret-santa@andrewlubawy.com",
+                bcc_emails=email,
+                subject="You don't have any gifts!",
+                html_content=f"<p>You are running out of time! "
+                f"<strong>Lists should be finalized by December {day}!</strong></p> "
+                f'Please <a href="secret-santa.andrewlubawy.com">login</a> '
+                f"to update your wish list now.",
+            )
+        )
+    # pylint:enable=line-too-long
 
     return messages
 
@@ -103,6 +103,9 @@ def send(message):
 
 
 def main(args):
+    with open(USERS, "r", encoding="utf-8") as csvfile:
+        email_list = [row["email"] for row in csv.DictReader(csvfile)]
+
     if args.new_santa:
         msg = new_santa_msg(email_list)
         send(msg)
@@ -114,7 +117,7 @@ def main(args):
             send(msg)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--new_santa", action="store_true")
     parser.add_argument("--missing_gifts", action="store_true")

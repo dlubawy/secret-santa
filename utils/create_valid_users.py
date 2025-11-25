@@ -17,9 +17,6 @@ CREDENTIALS = f"{HOME}/.config/firebase/credentials.json"
 
 USERS = f"{HOME}/.config/secret-santa/users.csv"
 
-with open(USERS, "r", encoding="utf-8") as csvfile:
-    valid_users = {row["email"]: row["name"] for row in csv.DictReader(csvfile)}
-
 DEFAULT_VALS = dict(name="", gifts=[], secret={}, uid="", never=[], previous="")
 
 
@@ -95,6 +92,9 @@ def main(prod=False):
     if not prod:
         os.environ["FIRESTORE_EMULATOR_HOST"] = "127.0.0.1:8080"
         os.environ["FIREBASE_AUTH_EMULATOR_HOST"] = "127.0.0.1:9099"
+
+    with open(USERS, "r", encoding="utf-8") as csvfile:
+        valid_users = {row["email"]: row["name"] for row in csv.DictReader(csvfile)}
 
     # Use a service account
     cred = credentials.Certificate(CREDENTIALS)
