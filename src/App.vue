@@ -38,7 +38,31 @@
                     :key="index"
                     class="list-group-item"
                   >
-                    <span v-html="makeLink(gift)" />
+                    <div class="row justify-content-center">
+                      <div class="col-sm-10 align-self-center">
+                        <s v-if="gift.isPurchased"><span v-html="makeLink(gift.name)" /></s>
+                        <span
+                          v-else
+                          v-html="makeLink(gift.name)"
+                        />
+                      </div>
+                      <div class="col-sm-2 align-self-center">
+                        <button
+                          class="btn-sm btn-warning"
+                          v-if="!gift.isPurchased"
+                          @click="purchasedGift(gift)"
+                        >
+                          Purchased
+                        </button>
+                        <button
+                          class="btn-sm btn-warning"
+                          v-else
+                          @click="removePurchasedGift(gift)"
+                        >
+                          Unmark
+                        </button>
+                      </div>
+                    </div>
                   </li>
                 </ul>
               </div>
@@ -157,6 +181,12 @@ import { db, auth } from "./firebaseConfig.js";
 
 const userRef = collection(db, "users");
 
+function getGifts(gifts, purchasedGifts) {
+  return gifts.map((gift) => {
+    return { name: gift, isPurchased: gift in purchasedGifts }
+  })
+}
+
 export default {
   name: "App",
   components: {
@@ -172,6 +202,8 @@ export default {
       isLocked: true,
       secretName: "",
       secretLocked: false,
+      purchasedGifts: {},
+      secretGifts: [],
       gifts: [],
       myGifts: [],
       newGift: "",
@@ -186,6 +218,10 @@ export default {
           .then((publicUser) => {
             if (publicUser.data()) {
               const privateRef = collection(userRef, user.uid, "private");
+              const ownedRef = collection(userRef, user.uid, "owned");
+              getDoc(doc(ownedRef, "data")).then((ownedUser) => {
+                this.purchasedGifts = ownedUser.data().purchasedGifts;
+              });
               getDoc(doc(privateRef, "data")).then((privateUser) => {
                 if (
                   privateUser.data().secret &&
@@ -195,7 +231,8 @@ export default {
                     doc(userRef, privateUser.data().secret.uid),
                     (secretUser) => {
                       this.secretName = secretUser.data().name;
-                      this.gifts = secretUser.data().gifts;
+                      this.secretGifts = secretUser.data().gifts;
+                      this.gifts = getGifts(this.secretGifts, this.purchasedGifts);
                       this.secretLocked = secretUser.data().isLocked;
                     }
                   );
@@ -215,6 +252,8 @@ export default {
         this.locked = false;
         this.secretName = "";
         this.secretLocked = false;
+        this.purchasedGifts = {};
+        this.secretGifts = [];
         this.gifts = [];
         this.myGifts = [];
       }
@@ -247,6 +286,48 @@ export default {
             });
           }
         });
+    },
+    removePurchasedGift(gift) {
+      getDoc(doc(userRef, auth.currentUser.uid)).then((publicUser) => {
+        if (publicUser.data()) {
+          const ownedRef = collection(userRef, auth.currentUser.uid, "owned");
+          getDoc(doc(ownedRef, "data")).then((ownedUser) => {
+            delete this.purchasedGifts[gift.name]
+            setDoc(doc(ownedRef, "data"), {
+              purchasedGifts: this.purchasedGifts,
+            })
+            this.gifts = getGifts(this.secretGifts, this.purchasedGifts);
+          })
+        }
+      }).catch((error) => {
+        if (error.code === "unavailable") {
+          this.addAlert({
+            text: "Failed to mark gift purchased because the client is offline.",
+            type: "warning",
+          });
+        }
+      })
+    },
+    purchasedGift(gift) {
+      getDoc(doc(userRef, auth.currentUser.uid)).then((publicUser) => {
+        if (publicUser.data()) {
+          const ownedRef = collection(userRef, auth.currentUser.uid, "owned");
+          getDoc(doc(ownedRef, "data")).then((ownedUser) => {
+            this.purchasedGifts[gift.name] = null;
+            setDoc(doc(ownedRef, "data"), {
+              purchasedGifts: this.purchasedGifts,
+            })
+            this.gifts = getGifts(this.secretGifts, this.purchasedGifts);
+          })
+        }
+      }).catch((error) => {
+        if (error.code === "unavailable") {
+          this.addAlert({
+            text: "Failed to mark gift purchased because the client is offline.",
+            type: "warning",
+          });
+        }
+      })
     },
     addNewGift() {
       getDoc(doc(userRef, auth.currentUser.uid))

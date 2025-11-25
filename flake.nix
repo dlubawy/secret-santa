@@ -29,10 +29,11 @@
               nodePackages_latest.prettier
               nodejs
               openjdk
-              python311
+              python312
               yarn
-            ] ++ (with pkgs.python311Packages; [
+            ] ++ (with pkgs.python312Packages; [
               pip
+              firebase-admin
               venvShellHook
             ]);
             env = {
