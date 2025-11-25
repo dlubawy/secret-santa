@@ -48,15 +48,15 @@
                       </div>
                       <div class="col-sm-2 align-self-center">
                         <button
-                          class="btn-sm btn-warning"
                           v-if="!gift.isPurchased"
+                          class="btn-sm btn-warning"
                           @click="purchasedGift(gift)"
                         >
                           Purchased
                         </button>
                         <button
-                          class="btn-sm btn-warning"
                           v-else
+                          class="btn-sm btn-warning"
                           @click="removePurchasedGift(gift)"
                         >
                           Unmark
