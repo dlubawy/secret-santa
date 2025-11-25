@@ -13,7 +13,6 @@
     "deploy:firebase": "firebase deploy"
   },
   "dependencies": {
-    "@vue/compat": "^3.5.24",
     "bootstrap": "^5.3.8",
     "bootswatch": "^5.3.8",
     "firebase": "^12.6.0",
